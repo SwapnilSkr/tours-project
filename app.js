@@ -30,10 +30,24 @@ app.get('/api/v1/tours/:id', (req, res) => {
   assigns the value to our variable that we defined in the route.*/
 
   const id = req.params.id * 1; // this is used to turn the id key in the params object from a string to an integer
+  if (id > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
   const tour = tours.find(
     (ele) => ele.id === id
   ); /* This find method is used to iterate through the tours array until it finds the
   object with an id equal to the variable passed as the parameter in the route.*/
+
+  /* if (!tour) {
+    return res.status(404).json({         Another way to handle error responses.
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }*/
 
   res.status(200).json({
     status: 'success',
