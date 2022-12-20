@@ -21,9 +21,13 @@ app.get('/api/v1/tours', (req, res) => {
   });
 });
 
-app.get('/api/v1/tours/:id', (req, res) => {
+app.get('/api/v1/tours/:id/:x/:y?', (req, res) => {
+  //? makes the parameter optional.
   //This :var is used to specify the variable
-  console.log(req.params); //req.params is where the variables defined in the routes are stored.
+  console.log(
+    req.params
+  ); /*req.params is where the variables defined in the routes are stored. It is an object which automatically 
+  assigns the value to our variable that we defined in the route.*/
   res.status(200).json({
     status: 'success',
     //result: tours.length,
@@ -32,6 +36,7 @@ app.get('/api/v1/tours/:id', (req, res) => {
     //},
   });
 });
+
 app.post('/api/v1/tours', (req, res) => {
   /* console.log(
     req.body
