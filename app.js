@@ -20,6 +20,18 @@ app.get('/api/v1/tours', (req, res) => {
     },
   });
 });
+
+app.get('/api/v1/tours/:id', (req, res) => {
+  //This :var is used to specify the variable
+  console.log(req.params); //req.params is where the variables defined in the routes are stored.
+  res.status(200).json({
+    status: 'success',
+    //result: tours.length,
+    //data: {
+    //tours: tours,
+    //},
+  });
+});
 app.post('/api/v1/tours', (req, res) => {
   /* console.log(
     req.body
