@@ -95,6 +95,27 @@ app.post('/api/v1/tours', (req, res) => {
   );
 });
 
+/*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
+the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
+generally use patch  because it is easier to simply update the properties that we want to update instead of returning the entire
+object. So we are going to make our app work for patch and not put.*/
+
+app.patch('/api/v1/tours/:id', (req, res) => {
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<Updated tour here....>', //We have not implemented any updates, instead in order to understand we have used placeholder.
+    },
+  });
+});
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`App listening to requests on port ${port}`);
