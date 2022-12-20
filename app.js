@@ -21,19 +21,26 @@ app.get('/api/v1/tours', (req, res) => {
   });
 });
 
-app.get('/api/v1/tours/:id/:x/:y?', (req, res) => {
+app.get('/api/v1/tours/:id', (req, res) => {
   //? makes the parameter optional.
   //This :var is used to specify the variable
   console.log(
     req.params
   ); /*req.params is where the variables defined in the routes are stored. It is an object which automatically 
   assigns the value to our variable that we defined in the route.*/
+
+  const id = req.params.id * 1; // this is used to turn the id key in the params object from a string to an integer
+  const tour = tours.find(
+    (ele) => ele.id === id
+  ); /* This find method is used to iterate through the tours array until it finds the
+  object with an id equal to the variable passed as the parameter in the route.*/
+
   res.status(200).json({
     status: 'success',
     //result: tours.length,
-    //data: {
-    //tours: tours,
-    //},
+    data: {
+      tour,
+    },
   });
 });
 
