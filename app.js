@@ -11,7 +11,8 @@ added to it. So it is added to the request object through this middleware.*/
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`) //tours stores the array of objects from tours-simple...
 );
-app.get('/api/v1/tours', (req, res) => {
+
+const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -19,9 +20,9 @@ app.get('/api/v1/tours', (req, res) => {
       tours: tours,
     },
   });
-});
+};
 
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTourbyId = (req, res) => {
   //? makes the parameter optional.
   //This :var is used to specify the variable
   console.log(
@@ -56,9 +57,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tour,
     },
   });
-});
+};
 
-app.post('/api/v1/tours', (req, res) => {
+const CreateTour = (req, res) => {
   /* console.log(
     req.body
   ); body is the property that is gonna be available on the request because we used the middleware on line 4. */
@@ -93,14 +94,9 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-});
+};
 
-/*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
-the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
-generally use patch  because it is easier to simply update the properties that we want to update instead of returning the entire
-object. So we are going to make our app work for patch and not put.*/
-
-app.patch('/api/v1/tours/:id', (req, res) => {
+const UpdateTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: 'fail',
@@ -114,9 +110,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: '<Updated tour here....>', //We have not implemented any updates, instead in order to understand we have used placeholder.
     },
   });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const DeleteTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: 'fail',
@@ -128,7 +124,18 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     data: null, // Similarly like the previous update request we haven't implemented the delete javascript, just a demo.
   });
-});
+};
+
+app.get('/api/v1/tours', getAllTours);
+app.get('/api/v1/tours/:id', getTourbyId);
+app.post('/api/v1/tours', CreateTour);
+app.patch('/api/v1/tours/:id', UpdateTour);
+app.delete('/api/v1/tours/:id', DeleteTour);
+
+/*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
+the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
+generally use patch  because it is easier to simply update the properties that we want to update instead of returning the entire
+object. So we are going to make our app work for patch and not put.*/
 
 const port = 3000;
 app.listen(port, () => {
