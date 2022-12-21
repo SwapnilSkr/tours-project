@@ -1,20 +1,39 @@
 const fs = require('fs');
 const express = require('express');
 const app = express();
+
 app.use(
   express.json()
-); /* This express.json() is a middleware. Middleware is basically just a function that can modify the incoming
+); /* This express.json() is a middleware(body parser). Middleware is basically just a function that can modify the incoming
 request data...this is called middleware because it stands between the request and the response. It is just a step the request goes
 through while it is being processed. And the steps the requests go through in this example is simply that the data from the body is
 added to it. So it is added to the request object through this middleware.*/
+
+app.use((req, res, next) => {
+  /*So this is a middleware created by us where we have the req and res objects along with a next() 
+function which is necessary for completing the middleware. In middlewares order is really important. We cannot use this middleware
+after the app after any router middleware because this is a global middleware while on the other hand the router middlewares are\
+route specific middlewares. */
+  console.log('Hello from the middleware....');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime =
+    new Date().toISOString(); /*requestTime property is set to display the current time and date. toISOString() 
+  converts the date to a string representable manner.*/
+  next();
+});
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`) //tours stores the array of objects from tours-simple...
 );
 
 const getAllTours = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: tours.length,
     data: {
       tours: tours,
