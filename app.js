@@ -126,11 +126,18 @@ const DeleteTour = (req, res) => {
   });
 };
 
-app.get('/api/v1/tours', getAllTours);
+/*app.get('/api/v1/tours', getAllTours);
 app.get('/api/v1/tours/:id', getTourbyId);
-app.post('/api/v1/tours', CreateTour);
+app.post('/api/v1/tours', CreateTour);               Refactoring the routes 
 app.patch('/api/v1/tours/:id', UpdateTour);
-app.delete('/api/v1/tours/:id', DeleteTour);
+app.delete('/api/v1/tours/:id', DeleteTour);*/
+
+app.route('/api/v1/tours').get(getAllTours).post(CreateTour);
+app
+  .route('/api/v1/tours/:id')
+  .get(getTourbyId) //Refactoring the routes in a better way by chaining them together.
+  .patch(UpdateTour)
+  .delete(DeleteTour);
 
 /*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
 the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
