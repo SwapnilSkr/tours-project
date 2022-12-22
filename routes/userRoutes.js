@@ -1,48 +1,12 @@
 const express = require('express');
-
-const getAllUsers = (req, res) => {
-  res.status(500).json({
-    //500 is called internal error.
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
-
-const PostUser = (req, res) => {
-  res.status(500).json({
-    //500 is called internal error.
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
-
-const getUserbyId = (req, res) => {
-  res.status(500).json({
-    //500 is called internal error.
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
-
-const UpdateUser = (req, res) => {
-  res.status(500).json({
-    //500 is called internal error.
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
-
-const DeleteUser = (req, res) => {
-  res.status(500).json({
-    //500 is called internal error.
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+const userController = require('./../controllers/userController');
 
 const Router = express.Router();
 
-Router.route('/').get(getAllUsers).post(PostUser);
-Router.route('/:id').get(getUserbyId).patch(UpdateUser).delete(DeleteUser);
+Router.route('/').get(userController.getAllUsers).post(userController.PostUser);
+Router.route('/:id')
+  .get(userController.getUserbyId)
+  .patch(userController.UpdateUser)
+  .delete(userController.DeleteUser);
 
 module.exports = Router;
