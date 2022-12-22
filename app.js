@@ -200,18 +200,23 @@ app.post('/api/v1/tours', CreateTour);               Refactoring the routes
 app.patch('/api/v1/tours/:id', UpdateTour);
 app.delete('/api/v1/tours/:id', DeleteTour);*/
 
-app.route('/api/v1/tours').get(getAllTours).post(CreateTour);
-app
-  .route('/api/v1/tours/:id')
+const tourRouter =
+  express.Router(); /*In order to bundle the routers in a better manner, we are using separate routers for both 
+resources*/
+const userRouter = express.Router();
+
+tourRouter.route('/').get(getAllTours).post(CreateTour); // ('/') is used in place of ('/api/v1/tours).
+tourRouter
+  .route('/:id')
   .get(getTourbyId) //Refactoring the routes in a better way by chaining them together.
   .patch(UpdateTour)
   .delete(DeleteTour);
-app.route('/api/v1/users').get(getAllUsers).post(PostUser);
-app
-  .route('/api/v1/users/:id')
-  .get(getUserbyId)
-  .patch(UpdateUser)
-  .delete(DeleteUser);
+
+userRouter.route('/').get(getAllUsers).post(PostUser);
+userRouter.route('/:id').get(getUserbyId).patch(UpdateUser).delete(DeleteUser);
+
+app.use('/api/v1/tours', tourRouter); //Mounting the routers
+app.use('/api/v1/users', userRouter); //We have to use the router middleware at the end.
 
 /*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
 the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
@@ -224,4 +229,3 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`App listening to requests on port ${port}`);
 });
-//Creating a legacy branch in order to save this code until now.... after refactoring our codebase may look different.
