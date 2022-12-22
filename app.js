@@ -47,9 +47,4 @@ the entire new updated object, and with patch, we only expect the properties tha
 generally use patch  because it is easier to simply update the properties that we want to update instead of returning the entire
 object. So we are going to make our app work for patch and not put.*/
 
-//3) START THE SERVER
-
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App listening to requests on port ${port}`);
-});
+module.exports = app;
