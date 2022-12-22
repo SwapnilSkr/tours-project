@@ -1,27 +1,54 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
+
+//1) MIDDLEWARE
+
+app.use(morgan('dev')); // HTTP request logger middleware.
+
 app.use(
   express.json()
-); /* This express.json() is a middleware. Middleware is basically just a function that can modify the incoming
+); /* This express.json() is a middleware(body parser). Middleware is basically just a function that can modify the incoming
 request data...this is called middleware because it stands between the request and the response. It is just a step the request goes
 through while it is being processed. And the steps the requests go through in this example is simply that the data from the body is
 added to it. So it is added to the request object through this middleware.*/
 
+app.use((req, res, next) => {
+  /*So this is a middleware created by us where we have the req and res objects along with a next() 
+function which is necessary for completing the middleware. In middlewares order is really important. We cannot use this middleware
+after the app after any router middleware because this is a global middleware while on the other hand the router middlewares are\
+route specific middlewares. */
+  console.log('Hello from the middleware....');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime =
+    new Date().toISOString(); /*requestTime property is set to display the current time and date. toISOString() 
+  converts the date to a string representable manner.*/
+  next();
+});
+
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`) //tours stores the array of objects from tours-simple...
 );
-app.get('/api/v1/tours', (req, res) => {
+
+//2) ROUTER FUNCTIONS
+
+const getAllTours = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: tours.length,
     data: {
       tours: tours,
     },
   });
-});
+};
 
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTourbyId = (req, res) => {
   //? makes the parameter optional.
   //This :var is used to specify the variable
   console.log(
@@ -56,9 +83,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tour,
     },
   });
-});
+};
 
-app.post('/api/v1/tours', (req, res) => {
+const CreateTour = (req, res) => {
   /* console.log(
     req.body
   ); body is the property that is gonna be available on the request because we used the middleware on line 4. */
@@ -93,14 +120,9 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-});
+};
 
-/*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
-the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
-generally use patch  because it is easier to simply update the properties that we want to update instead of returning the entire
-object. So we are going to make our app work for patch and not put.*/
-
-app.patch('/api/v1/tours/:id', (req, res) => {
+const UpdateTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: 'fail',
@@ -114,9 +136,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: '<Updated tour here....>', //We have not implemented any updates, instead in order to understand we have used placeholder.
     },
   });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const DeleteTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: 'fail',
@@ -128,7 +150,75 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     data: null, // Similarly like the previous update request we haven't implemented the delete javascript, just a demo.
   });
-});
+};
+
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const PostUser = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const getUserbyId = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const UpdateUser = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const DeleteUser = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+//3) ROUTES
+
+/*app.get('/api/v1/tours', getAllTours);
+app.get('/api/v1/tours/:id', getTourbyId);
+app.post('/api/v1/tours', CreateTour);               Refactoring the routes 
+app.patch('/api/v1/tours/:id', UpdateTour);
+app.delete('/api/v1/tours/:id', DeleteTour);*/
+
+app.route('/api/v1/tours').get(getAllTours).post(CreateTour);
+app
+  .route('/api/v1/tours/:id')
+  .get(getTourbyId) //Refactoring the routes in a better way by chaining them together.
+  .patch(UpdateTour)
+  .delete(DeleteTour);
+app.route('/api/v1/users').get(getAllUsers).post(PostUser);
+app
+  .route('/api/v1/users/:id')
+  .get(getUserbyId)
+  .patch(UpdateUser)
+  .delete(DeleteUser);
+
+/*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
+the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
+generally use patch  because it is easier to simply update the properties that we want to update instead of returning the entire
+object. So we are going to make our app work for patch and not put.*/
+
+//4) START THE SERVER
 
 const port = 3000;
 app.listen(port, () => {
