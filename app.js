@@ -1,6 +1,11 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
+
+//1) MIDDLEWARE
+
+app.use(morgan('dev')); // HTTP request logger middleware.
 
 app.use(
   express.json()
@@ -28,6 +33,8 @@ app.use((req, res, next) => {
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`) //tours stores the array of objects from tours-simple...
 );
+
+//2) ROUTER FUNCTIONS
 
 const getAllTours = (req, res) => {
   console.log(req.requestTime);
@@ -145,6 +152,48 @@ const DeleteTour = (req, res) => {
   });
 };
 
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const PostUser = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const getUserbyId = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const UpdateUser = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const DeleteUser = (req, res) => {
+  res.status(500).json({
+    //500 is called internal error.
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+//3) ROUTES
+
 /*app.get('/api/v1/tours', getAllTours);
 app.get('/api/v1/tours/:id', getTourbyId);
 app.post('/api/v1/tours', CreateTour);               Refactoring the routes 
@@ -157,11 +206,19 @@ app
   .get(getTourbyId) //Refactoring the routes in a better way by chaining them together.
   .patch(UpdateTour)
   .delete(DeleteTour);
+app.route('/api/v1/users').get(getAllUsers).post(PostUser);
+app
+  .route('/api/v1/users/:id')
+  .get(getUserbyId)
+  .patch(UpdateUser)
+  .delete(DeleteUser);
 
 /*We have two http methods to update data. Those methods are put and patch. And with put we expect that our application receives 
 the entire new updated object, and with patch, we only expect the properties that should actually be updated on the object. We 
 generally use patch  because it is easier to simply update the properties that we want to update instead of returning the entire
 object. So we are going to make our app work for patch and not put.*/
+
+//4) START THE SERVER
 
 const port = 3000;
 app.listen(port, () => {
