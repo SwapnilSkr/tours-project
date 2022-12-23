@@ -6,6 +6,15 @@ functions in the route handling section*/
 const Router =
   express.Router(); /*In order to bundle the routers in a better manner, we are using separate routers for both 
 resources*/
+
+/*Router.param('id', (req, res, next, val) => {
+  //this is called the param middleware where there are 4 arguments. val is new.
+  console.log(`The Tour id is ${val}`);
+  next();
+});*/
+
+Router.param('id', tourController.checkId);
+
 Router.route('/')
   .get(tourController.getAllTours)
   .post(tourController.CreateTour); // ('/') is used in place of ('/api/v1/tours).

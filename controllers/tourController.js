@@ -4,6 +4,17 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`) //tours stores the array of objects from tours-simple...
 );
 
+exports.checkId = (req, res, next, val) => {
+  console.log(`The Tour id is ${val}`);
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   /* instead of const we are using exports.function-name because we will be exporting these
 functions to the tourRoutes.js package.*/
@@ -25,15 +36,7 @@ exports.getTourbyId = (req, res) => {
     req.params
   ); /*req.params is where the variables defined in the routes are stored. It is an object which automatically 
     assigns the value to our variable that we defined in the route.*/
-
-  const id = req.params.id * 1; // this is used to turn the id key in the params object from a string to an integer
-  if (id > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
+  const id = req.params.id * 1;
   const tour = tours.find(
     (ele) => ele.id === id
   ); /* This find method is used to iterate through the tours array until it finds the
@@ -93,13 +96,6 @@ exports.CreateTour = (req, res) => {
 };
 
 exports.UpdateTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -109,13 +105,6 @@ exports.UpdateTour = (req, res) => {
 };
 
 exports.DeleteTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   res.status(204).json({
     status: 'success',
     data: null, // Similarly like the previous update request we haven't implemented the delete javascript, just a demo.
