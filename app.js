@@ -15,6 +15,13 @@ request data...this is called middleware because it stands between the request a
 through while it is being processed. And the steps the requests go through in this example is simply that the data from the body is
 added to it. So it is added to the request object through this middleware.*/
 
+app.use(
+  express.static('./public')
+); /*this middleware is used to serve the static files. These files are the ones to which we 
+haven't defined any routers yet, like those in the public folder, the html files, the css files etc. Remember that on the browser
+always use 127.0.0.1:3000/filename.ext, no need to specify the folder name before the filename because it has already been 
+defined inside the middleware. */
+
 app.use((req, res, next) => {
   /*So this is a middleware created by us where we have the req and res objects along with a next() 
 function which is necessary for completing the middleware. In middlewares order is really important. We cannot use this middleware
