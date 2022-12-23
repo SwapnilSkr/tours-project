@@ -17,7 +17,11 @@ Router.param('id', tourController.checkId);
 
 Router.route('/')
   .get(tourController.getAllTours)
-  .post(tourController.CreateTour); // ('/') is used in place of ('/api/v1/tours).
+  .post(
+    tourController.checkBody,
+    tourController.CreateTour
+  ); /* ('/') is used in place of ('/api/v1/tours). We can use two 
+  middleware functions by chaining them together inside a router request*/
 Router.route('/:id')
   .get(tourController.getTourbyId)
   .patch(tourController.UpdateTour)
