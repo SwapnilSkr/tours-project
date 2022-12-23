@@ -92,7 +92,7 @@ exports.CreateTour = (req, res) => {
   ); /*Pushing the newTour object into the tours array of objects. */
 
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       res.status(201).json({
