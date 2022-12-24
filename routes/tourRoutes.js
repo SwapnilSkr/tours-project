@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/no-useless-path-segments */
+/* eslint-disable prettier/prettier */
 const express = require('express');
 const tourController = require('./../controllers/tourController'); /*receiving the functions from tourController and storing it inside
 tourController object. So tourController is an object of functions.*/

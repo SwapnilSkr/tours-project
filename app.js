@@ -1,3 +1,9 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-console */
+/* eslint-disable prettier/prettier */
+/* eslint-disable eqeqeq */
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/newline-after-import */
 const express = require('express');
 const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes'); //fetching the tourRoutes package that we created.

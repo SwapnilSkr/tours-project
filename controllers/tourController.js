@@ -1,3 +1,9 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
+/* eslint-disable prefer-object-spread */
+/* eslint-disable prettier/prettier */
 const fs = require('fs');
 
 const tours = JSON.parse(
