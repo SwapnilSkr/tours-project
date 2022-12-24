@@ -5,8 +5,10 @@ const userRouter = require('./routes/userRoutes'); //fetching the userRoutes pac
 const app = express();
 
 //1) MIDDLEWARE
-
-app.use(morgan('dev')); // HTTP request logger middleware.
+if (process.env.NODE_ENV == 'development') {
+  //Making sure that the logger works only when the app is in development environment.
+  app.use(morgan('dev')); // HTTP request logger middleware.
+}
 
 app.use(
   express.json()
