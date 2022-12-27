@@ -16,7 +16,7 @@ resources*/
   next();
 });*/
 
-Router.param('id', tourController.checkId);
+//Router.param('id', tourController.checkId);
 
 Router.route('/')
   .get(tourController.getAllTours)

@@ -12,6 +12,14 @@ dotenv.config({
 Remember that this should remain before we require or import app from app.js to server.js which is done in the next step.
 Changed the json scripts in package.json for development and production environments.*/
 const app = require('./app');
+
+/*console.log(
+  app.get('env')
+); We are currently in a development environment. So this app.get('env') will get us the'env' environment
+variable. So environment variables are global variables that are used to define the environment in which the node app is running.
+This 'env' variable is set up by Express itself but node.js also sets up a lot of environment variables.*/
+//console.log(process.env); list of environment variables
+
 const DB = process.env.DATABASE.replace(
   /*storing the database from the config.env but replacing the <PASSWORD> with 
 DATABASE_PASSWORD*/
@@ -32,31 +40,21 @@ mongoose
     console.log('DB connection successful');
   });
 
-const tourSchema = new mongoose.Schema({
-  //Creating a basic tour schema illustrating the type of tour we want to create
-  name: {
-    type: String,
-    required: [true, 'A tour must have a name'], //This property ensures that name is required.
-    unique: true, //This property ensures that the name must be unique.
-  },
-  rating: {
-    type: Number,
-    default: 4.5, //This property ensures that the rating has 4.5 in default.
-  },
-  price: {
-    type: Number,
-    required: [true, 'A tour must have a price'],
-  },
+/*const testTour = new Tour({
+  //Creating Documents and testing the 'Tour' model
+  name: 'The Park Camper',
+  price: 997,
 });
 
-const Tour = mongoose.model('Tour', tourSchema); //Creating a model with the name 'Tour' and specifying the schema.
+testTour
+  .save()
+  .then((doc) => {
+    console.log(doc);
+  })
+  .catch((err) => {
+    console.log('Error', err);
+  });*/
 
-/*console.log(
-  app.get('env')
-); We are currently in a development environment. So this app.get('env') will get us the'env' environment
-variable. So environment variables are global variables that are used to define the environment in which the node app is running.
-This 'env' variable is set up by Express itself but node.js also sets up a lot of environment variables.*/
-//console.log(process.env); list of environment variables
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`App listening to requests on port ${port}`);
