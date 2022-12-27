@@ -24,7 +24,7 @@ const Tour = require('./../models/tourModel');
   next();
 };*/
 
-exports.checkBody = (req, res, next) => {
+/*exports.checkBody = (req, res, next) => {
   if (!req.body.name || !req.body.price) {
     return res.status(400).json({
       status: 'fail',
@@ -32,13 +32,13 @@ exports.checkBody = (req, res, next) => {
     });
   }
   next();
-};
+};*/
 
-exports.getAllTours = (req, res) => {
+exports.getAllTours = async (req, res) => {
   /* instead of const we are using exports.function-name because we will be exporting these
-functions to the tourRoutes.js package.*/
+functions to the tourRoutes.js package.
   console.log(req.requestTime);
-  /* res.status(200).json({
+   res.status(200).json({
     status: 'success',
     requestedAt: req.requestTime,
     results: tours.length,
@@ -46,28 +46,41 @@ functions to the tourRoutes.js package.*/
       tours: tours,
     },
   });*/
+  try {
+    const tours = await Tour.find();
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: {
+        tours: tours,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getTourbyId = (req, res) => {
+exports.getTourbyId = async (req, res) => {
   //? makes the parameter optional.
-  //This :var is used to specify the variable
+  /*This :var is used to specify the variable
   console.log(
     req.params
-  ); /*req.params is where the variables defined in the routes are stored. It is an object which automatically 
+  ); req.params is where the variables defined in the routes are stored. It is an object which automatically 
     assigns the value to our variable that we defined in the route.*/
   /*const id = req.params.id * 1;
   const tour = tours.find(
     (ele) => ele.id === id
   );  This find method is used to iterate through the tours array until it finds the
     object with an id equal to the variable passed as the parameter in the route.*/
-
   /* if (!tour) {
       return res.status(404).json({         Another way to handle error responses.
         status: 'fail',
         message: 'Invalid ID',
       });
     }*/
-
   /*res.status(200).json({
     status: 'success',
     //result: tours.length,
@@ -75,9 +88,24 @@ exports.getTourbyId = (req, res) => {
       tour,
     },
   });*/
+  try {
+    const tour = await Tour.findById(req.params.id);
+    //same as Tour.findOne({_id: req.params.id}); _id because that is how it is defined by mongodb.
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.CreateTour = (req, res) => {
+exports.CreateTour = async (req, res) => {
   /* console.log(
       req.body
     ); body is the property that is gonna be available on the request because we used the middleware on line 4. */
@@ -109,7 +137,26 @@ exports.CreateTour = (req, res) => {
         },
       });
     }
-  );*/
+  );
+  const newTour = new Tour({});   We normally create a new tour using this method
+  newTour.save();  But we can also use another method*/
+  try {
+    const newTour = await Tour.create(
+      req.body
+    ); /*We are using async await because .create or .save returns a promise which can be
+    handled by either .then and catch or try and catch*/
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tours: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent!',
+    });
+  }
 };
 
 exports.UpdateTour = (req, res) => {
