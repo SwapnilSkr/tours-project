@@ -159,18 +159,39 @@ exports.CreateTour = async (req, res) => {
   }
 };
 
-exports.UpdateTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here....>', //We have not implemented any updates, instead in order to understand we have used placeholder.
-    },
-  });
+exports.UpdateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, //so that the patch request returns the updated document and not the original one
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent!',
+    });
+  }
 };
 
-exports.DeleteTour = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    data: null, // Similarly like the previous update request we haven't implemented the delete javascript, just a demo.
-  });
+exports.DeleteTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent!',
+    });
+  }
 };
