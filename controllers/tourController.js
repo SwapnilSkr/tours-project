@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable node/no-unsupported-features/es-syntax */
+/* eslint-disable prettier/prettier */
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
@@ -47,7 +49,31 @@ functions to the tourRoutes.js package.
     },
   });*/
   try {
-    const tours = await Tour.find();
+    /*const tours = await Tour.find({  We can hard code a query like this as well
+      duration: 5,
+      difficulty: 'easy',
+    });*/
+
+    /*const tours = await Tour.find() We can also define queries using the below methods
+      .where('duration')
+      .equals(5)
+      .where('difficulty')
+      .equals('easy');*/
+
+    /*Now there are some special field names present by default in the query string which are used for special purposes like 
+    pagination etc. For now we have to exclude those special field names from our query string. */
+    const queryObj = { ...req.query }; //Creating a copy of the req.query object so that we don't tamper with the main object.
+    const excludedFields = ['page', 'sort', 'limit', 'fields']; //The special fields to be excluded
+    excludedFields.forEach((ele) => {
+      //This loops through the entire excludedFields array and executes the defined function.
+      delete queryObj[ele];
+    });
+
+    //console.log(req.query, queryObj); This req.query is an object containing the queries which we made in the url (postman).
+
+    const query = Tour.find(queryObj); //the server will filter according to the passed query and then return it.
+    const tours = await query; //We will await the query at last when all of our filtering work has been done.
+
     res.status(200).json({
       status: 'success',
       results: tours.length,
