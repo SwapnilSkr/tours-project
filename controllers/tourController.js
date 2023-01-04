@@ -49,6 +49,7 @@ functions to the tourRoutes.js package.
     },
   });*/
   try {
+    //1.Filtering :
     /*const tours = await Tour.find({  We can hard code a query like this as well
       duration: 5,
       difficulty: 'easy',
@@ -69,9 +70,25 @@ functions to the tourRoutes.js package.
       delete queryObj[ele];
     });
 
-    //console.log(req.query, queryObj); This req.query is an object containing the queries which we made in the url (postman).
+    //console.log(req.query, queryObj); This req.query is an object containing the queries which we made in the url (postman)
 
-    const query = Tour.find(queryObj); //the server will filter according to the passed query and then return it.
+    //2. Advanced Filtering :
+    let queryStr = JSON.stringify(queryObj); //converting into string so we can use the replace method as it is only for strings.
+    queryStr = queryStr.replace(
+      /\b(gte|gt|lte|lt)\b/g,
+      (match) => `$${match}`
+    ); /*\b...\b is used to make sure that the exact words
+    are getting replaced and not just the letters. The /g is used because if not used then only the first operator i.e, gte 
+    would have been replaced. */
+    console.log(JSON.parse(queryStr));
+
+    console.log(
+      queryObj
+    ); /*returns { duration: { gte: '5' }, difficulty: 'easy' } in the console and error as a response
+    when passed GET /api/v1/tours?duration[gte]=5&difficulty=easy as a query*/
+
+    //const query = Tour.find(queryObj); the server will filter according to the passed query and then return it.
+    const query = Tour.find(JSON.parse(queryStr)); //We want the server to respond to [gte] and not just [$gte] so we pass this instead.
     const tours = await query; //We will await the query at last when all of our filtering work has been done.
 
     res.status(200).json({
