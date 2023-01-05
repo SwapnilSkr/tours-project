@@ -49,7 +49,7 @@ functions to the tourRoutes.js package.
     },
   });*/
   try {
-    //1.Filtering :
+    //1. Filtering :
     /*const tours = await Tour.find({  We can hard code a query like this as well
       duration: 5,
       difficulty: 'easy',
@@ -71,6 +71,7 @@ functions to the tourRoutes.js package.
     });
 
     //console.log(req.query, queryObj); This req.query is an object containing the queries which we made in the url (postman)
+    //const query = Tour.find(queryObj); the server will filter according to the passed query and then return it.
 
     //2. Advanced Filtering :
     let queryStr = JSON.stringify(queryObj); //converting into string so we can use the replace method as it is only for strings.
@@ -81,6 +82,7 @@ functions to the tourRoutes.js package.
     are getting replaced and not just the letters. The /g is used because if not used then only the first operator i.e, gte 
     would have been replaced. */
     console.log(JSON.parse(queryStr));
+    let query = Tour.find(JSON.parse(queryStr)); //We want the server to respond to [gte] and not just [$gte] so we pass this ins
 
     /*console.log(
       queryObj
@@ -88,9 +90,6 @@ functions to the tourRoutes.js package.
     when passed GET /api/v1/tours?duration[gte]=5&difficulty=easy as a query*/
 
     //3. Sorting :
-    //const query = Tour.find(queryObj); the server will filter according to the passed query and then return it.
-    let query = Tour.find(JSON.parse(queryStr)); //We want the server to respond to [gte] and not just [$gte] so we pass this instead.
-
     if (req.query.sort) {
       //remember that req.query is an object and req.query.sort is a string.
       const sortBy = req.query.sort.split(',').join(' '); //handling when we have to sort more than one fields.
@@ -98,6 +97,14 @@ functions to the tourRoutes.js package.
       query = query.sort(sortBy);
     } else {
       query = query.sort('-createdAt');
+    }
+
+    //4. Field Limiting :
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' '); //similar to sorting.
+      query = query.select(fields); //select method just shows those fields included in the query.((fields) is a string, remember)
+    } else {
+      query = query.select('-__v'); //-ve select just doesn't show include the given field in the response.
     }
     const tours = await query; //We will await the query at last when all of our filtering work has been done.
 
