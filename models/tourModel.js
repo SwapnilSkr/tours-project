@@ -54,6 +54,7 @@ const tourSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now(),
+    select: false,
   },
   startDates: [Date], //Different than the previous createdAt dates....this is an array of dates describing the timing of the tour.
 });

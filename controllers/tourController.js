@@ -104,7 +104,12 @@ functions to the tourRoutes.js package.
       const fields = req.query.fields.split(',').join(' '); //similar to sorting.
       query = query.select(fields); //select method just shows those fields included in the query.((fields) is a string, remember)
     } else {
-      query = query.select('-__v'); //-ve select just doesn't show include the given field in the response.
+      query =
+        query.select(
+          '-__v'
+        ); /*-ve select just doesn't show include the given field in the response. We can choose not to
+      show some fields to the users if we want by setting the property of the required fields to false. Like I have set the 
+      property of the createdAt field to false. */
     }
     const tours = await query; //We will await the query at last when all of our filtering work has been done.
 
