@@ -82,13 +82,23 @@ functions to the tourRoutes.js package.
     would have been replaced. */
     console.log(JSON.parse(queryStr));
 
-    console.log(
+    /*console.log(
       queryObj
-    ); /*returns { duration: { gte: '5' }, difficulty: 'easy' } in the console and error as a response
+    ); returns { duration: { gte: '5' }, difficulty: 'easy' } in the console and error as a response
     when passed GET /api/v1/tours?duration[gte]=5&difficulty=easy as a query*/
 
+    //3. Sorting :
     //const query = Tour.find(queryObj); the server will filter according to the passed query and then return it.
-    const query = Tour.find(JSON.parse(queryStr)); //We want the server to respond to [gte] and not just [$gte] so we pass this instead.
+    let query = Tour.find(JSON.parse(queryStr)); //We want the server to respond to [gte] and not just [$gte] so we pass this instead.
+
+    if (req.query.sort) {
+      //remember that req.query is an object and req.query.sort is a string.
+      const sortBy = req.query.sort.split(',').join(' '); //handling when we have to sort more than one fields.
+      //query = query.sort(req.query.sort);
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
     const tours = await query; //We will await the query at last when all of our filtering work has been done.
 
     res.status(200).json({
