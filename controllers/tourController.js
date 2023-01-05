@@ -111,6 +111,27 @@ functions to the tourRoutes.js package.
       show some fields to the users if we want by setting the property of the required fields to false. Like I have set the 
       property of the createdAt field to false. */
     }
+
+    //5. Pagination
+    const page = req.query.page * 1 || 1; //The default value will be 1.
+    const limit = req.query.limit * 1 || 100; //The default value will be 100.
+    const skip = (page - 1) * limit;
+
+    query = query
+      .skip(skip)
+      .limit(
+        limit
+      ); /*The skip method will skip the number of results in order to get the desired page.
+    if the page we want to open is 2 and the limit is 10 then the skip value will be 20 i.e, 20 results will have to be 
+    skipped. */
+
+    if (req.query.page) {
+      //if the page requested doesn't exist.
+      const numTour = await Tour.countDocuments(); //This method counts the total number of results and returns a promise.
+      if (skip >= numTour) throw new Error('This page does not exist');
+    }
+
+    //Execute Query
     const tours = await query; //We will await the query at last when all of our filtering work has been done.
 
     res.status(200).json({
